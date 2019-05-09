@@ -1,15 +1,17 @@
 using AbstractPlotting
 using Meshing: SignedDistanceField, HyperRectangle, Vec, HomogenousMesh, MarchingTetrahedra
 
-f = x -> sum(sin, 5 * x)
+# algebraic dual boundary of the elliptopes
+f = x -> (x[1]^2*x[2]^2 + x[1]^2*x[3]^2 + x[2]^2*x[3]^2 - 2*prod(x))
 
-sdf = SignedDistanceField(f, HyperRectangle(Vec(-1, -1, -1), Vec(2, 2, 2)))
+sdf = SignedDistanceField(f, HyperRectangle(Vec(-1, -1, -1), Vec(2, 2, 2)),0.01)
 
 m = HomogenousMesh(sdf, MarchingTetrahedra())
 
 using MeshCat
 vis = Visualizer()
 open(vis)
+
 setobject!(vis, m,
            MeshPhongMaterial(color=RGBA{Float32}(1, 0, 0, 0.5)))
 
